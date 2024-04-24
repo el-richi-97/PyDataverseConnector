@@ -18,14 +18,31 @@ if __name__ == '__main__':
         environment_uri=TEST_ENVIRONMENT_URI
     )
 
-    # Obtaining session
-    session = dataverse.get_session()
-    print('Connected' if session.status_code == 200 else 'Connection failed')
+    queri1 = dataverse.get_session_content()
 
-    # Obtaining session content
-    session_content = dataverse.get_session_content()
-    print(f'len: {len(session_content)} // type: {type(session_content)}')
+    print(queri1)
 
     # Making a query
-    query = dataverse.get_data(entity='cr181_anexosdatas', top=50)
-    print(query['value'])
+    filters = {'cr181_anexosdataid': ('eq', '693c2338-9efc-ee11-a1fe-000d3a494a6e')}
+    query = dataverse.get_data(entity='cr181_anexosdatas', filters=filters)
+
+    print('data:')
+    for i, data in enumerate(query['value']):
+        print(f'{i + 1} -> {data}')
+
+    data_to_update = {'cr181_cnae': r'hello_world_from_PyDataverseConnector'}
+
+    update = dataverse.update_data(
+        entity='cr181_anexosdatas',
+        filter_name='cr181_anexosdataid',
+        filter_value='693c2338-9efc-ee11-a1fe-000d3a494a6e',
+        update_data=data_to_update
+    )
+
+    print(update.status_code, update.content)
+
+    query2 = dataverse.get_data(entity='cr181_anexosdatas', filters=filters)
+
+    print('updated data:')
+    for i, data in enumerate(query2['value']):
+        print(f'{i + 1} -> {data}')
