@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pydataverse_connector',  # Nombre del proyecto
-    version='0.1a1',  # Versión del proyecto
+    version='0.1a2',  # Versión del proyecto
     packages=find_packages(),  # Encuentra automáticamente los paquetes a incluir
     install_requires=[
         'msal==1.28.0',  # Dependencia MSAL
