@@ -1,7 +1,11 @@
 import msal
 import requests
 import json
+import os
 import urllib.parse
+from dotenv import load_dotenv, set_key
+
+load_dotenv('../.env')
 
 
 MS_BASE_LOGIN_URL = 'https://login.microsoftonline.com/'
@@ -27,7 +31,16 @@ class ConnectDataverse:
 
         # Session
         self.__app = msal.PublicClientApplication(client_id=self.__client_id, authority=self.__authority)
-        self.__result = self.__app.acquire_token_interactive(scopes=self.__scope)
+
+        try:
+            self.__result = self.__app.acquire_token_by_refresh_token(
+                refresh_token=os.getenv('REFRESH_TOKEN'),
+                scopes=self.__scope
+            )
+
+        except AssertionError:
+            self.__result = self.__app.acquire_token_interactive(scopes=self.__scope)
+            set_key('../.env', 'REFRESH_TOKEN', self.__result['refresh_token'])
 
         if 'access_token' in self.__result:
 
